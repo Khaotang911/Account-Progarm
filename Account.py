@@ -177,3 +177,4 @@ class openAccount:
             except:
                 print('สิ่งที่ผู้ใช้ป้อนไม่อยู่ในระบบ!!! กรุณาป้อนข้อมูลตามที่กำหนด\n')
 
+openAccount()
