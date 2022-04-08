@@ -79,7 +79,6 @@ class openAccount:
                 day_month = "1/"+day_month
                 day_create = self.date_create(day_month)
                 day_month = str(day_create)[-2]
-            self.showTotal(df)
             df = df.drop(columns='Money')
             final_df = df.loc[df['Date'].str.contains(str(day_month), na=False)]
             print(tabulate.tabulate(final_df, headers='keys', showindex=False), "\n")
@@ -89,7 +88,6 @@ class openAccount:
     def showAll(self, file_name):
         try:
             df = pd.read_csv(file_name)
-            self.showTotal(df)
             df = df.drop(columns='Money')
             print(tabulate.tabulate(df, headers='keys', showindex=False), "\n")
         except:
@@ -114,6 +112,7 @@ class openAccount:
         df = df.sort_values(by='Date')
 
         df['No.'] = np.arange(1, len(df) + 1)
+        self.make_total(df)
 
         showDF = newDF.drop(columns=["Total", "Money"])
         print(showDF)
@@ -124,11 +123,11 @@ class openAccount:
         else:
             pass
 
-    def showTotal(self, data):
-        Total = 0
+    def make_total(self, data):
+        total = 0
         for i in range(len(data)):
-            Total = Total + data.iloc[i, -1]
-            data.iloc[i, -2] = Total
+            total = total + data.iloc[i, -1]
+            data.iloc[i, -2] = total
 
     def checkFolder(self):
         try:
