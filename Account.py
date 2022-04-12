@@ -16,7 +16,6 @@ import datetime as dt
 
 class openAccount:
 
-
     # ฟังก์ชั่นหลัก
     def choice(self, choose, file_name):
         if choose == 1:
@@ -78,7 +77,7 @@ class openAccount:
             except:
                 day_month = "1/"+day_month
                 day_create = self.date_create(day_month)
-                day_month = str(day_create)[-2]
+                day_month = str(day_create)[:-3]
             df = df.drop(columns='Money')
             final_df = df.loc[df['Date'].str.contains(str(day_month), na=False)]
             print(tabulate.tabulate(final_df, headers='keys', showindex=False), "\n")
@@ -105,7 +104,7 @@ class openAccount:
             Expense = Money * (-1)
         Total = 0
 
-        newData = np.array([(len(df) + 1, Date, Description, Income, Expense, Total, Money)])
+        newData = np.array([(1, Date, Description, Income, Expense, Total, Money)])
         newDF = pd.DataFrame(data=newData, columns=col)
         df = pd.concat([df, newDF])
         df['Date'] = pd.to_datetime(df['Date'])
@@ -130,33 +129,35 @@ class openAccount:
             data.iloc[i, -2] = total
 
     def checkFolder(self):
-        try:
-            if not os.path.exists('D:\AccountFile'):
-                print("ทางโปรแกรมพบว่าท่านไม่มีไฟล์ที่ใช้จัดเก็บข้อมูลสำหรับโปรแกรม\n"
+        if not (os.path.exists('D:\AccountFile') or os.path.exists('C:\AccountFile')):
+            print("ทางโปรแกรมพบว่าท่านไม่มีไฟล์ที่ใช้จัดเก็บข้อมูลสำหรับโปรแกรม\n"
                       "จึงขออนุญาติสร้างโฟลเดอร์เก็บข้อมูล\n"
                       "ท่านต้องการสร้างโฟล์เดอร์ไว้ที่ไดรฟ์ไหนระหว่าง C หรือ D")
-                drive_name = input(":")
-                os.makedirs(drive_name.upper()+':\AccountFile')
-        except OSError:
-            pass
+            drive_name = input(":").upper()
+            os.makedirs(drive_name+':\AccountFile')
+        elif os.path.exists('D:\AccountFile'):
+            drive_name = 'D'
+        elif os.path.exists('C:\AccountFile'):
+            drive_name = 'C'
+        return drive_name
 
-    def writeFile(self):
+    def writeFile(self, drive_name):
         name = input('พิมพ์ชื่อไฟล์ที่ต้องการจะตั้ง :')
-        file_name = 'D:\AccountFile/' + name + '.csv'
+        file_name = drive_name + ':\AccountFile/' + name + '.csv'
         col = ['No.', 'Date', 'Description', 'Income', 'Expense', 'Total']
         f = open(file_name, 'w')
         writer = csv.writer(f)
         writer.writerow(col)
         return file_name
 
-    def selectingFile(self):
+    def selectingFile(self, drive_name):
         print("รายชื่อไฟล์ที่มีอยู่:")
-        for i in os.listdir(r'D:\AccountFile'):
+        for i in os.listdir(drive_name + ':\AccountFile'):
             print(i[:-4])
         print('\nพิมพ์ชื่อไฟล์ที่ต้องการจะใช้')
         name = input(':')
         fname = name + '.csv'
-        if fname in os.listdir(r'D:\AccountFile'):
+        if fname in os.listdir(drive_name + ':\AccountFile'):
             file_name = 'D:\AccountFile/' + name + '.csv'
         else:
             print("ไม่มีไฟล์ที่ท่านระบุอยู่ในระบบ กรุณาสร้างไฟล์เพื่อบันทึก")
@@ -166,7 +167,6 @@ class openAccount:
         df = pd.read_csv(file_name)
         day = str(self.date_create(day))
         df = df.loc[df['Date'].str.contains(day, na=False)]
-        self.showTotal(df)
         no = []
         total = []
         for i in range(len(df)):
@@ -190,7 +190,6 @@ class openAccount:
         day = np.arange(1, len(month_date_list) + 1)
         total = []
         plot_total = []
-        self.showTotal(df)
         for i in range(len(day)):
             newdf = df.loc[df['Date'].str.contains(month_date_list[i], na=False)]
             total.append(newdf['Total'].sum())
@@ -203,7 +202,7 @@ class openAccount:
         fig = plt.figure(figsize=(15, 5))
         ax = fig.add_subplot(111)
         ax.plot(day, plot_total, marker='*')
-        plt.ylim(min(total), max(total) * 3 / 2)
+        plt.ylim(min(plot_total), max(plot_total) * 3 / 2)
         plt.xlim(1, 31)
         plt.title("Total money of the account in the month " + str(month))
         plt.xlabel("Date of receipt of income - expense (Date)")
@@ -242,7 +241,7 @@ class openAccount:
     # ฟังก์ชั่นการทำงานของโปรแกรม
     def __init__(self):
         self.strat_menu()
-        self.checkFolder()
+        drive_name = self.checkFolder()
         while True:
             print("ผู้ใช้ต้องการดำเนินการกับไฟล์ที่มีหรือต้องการสร้างไฟล์ใหม่?\n"
                   "ต้องการดำเนินการกับไฟล์ที่มีอยู่พิมพ์ 1\n"
@@ -252,9 +251,9 @@ class openAccount:
             try:
                 file_select = int(input(':'))
                 if file_select == 1:
-                    file_name = self.selectingFile()
+                    file_name = self.selectingFile(drive_name)
                 elif file_select == 2:
-                    file_name = self.writeFile()
+                    file_name = self.writeFile(drive_name)
                 elif file_select == 3:
                     break
                 else:
