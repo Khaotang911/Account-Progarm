@@ -131,10 +131,14 @@ class openAccount:
     def checkFolder(self):
         if not (os.path.exists('D:\AccountFile') or os.path.exists('C:\AccountFile')):
             print("ทางโปรแกรมพบว่าท่านไม่มีไฟล์ที่ใช้จัดเก็บข้อมูลสำหรับโปรแกรม\n"
-                      "จึงขออนุญาติสร้างโฟลเดอร์เก็บข้อมูล\n"
-                      "ท่านต้องการสร้างโฟล์เดอร์ไว้ที่ไดรฟ์ไหนระหว่าง C หรือ D")
+                          "จึงขออนุญาติสร้างโฟลเดอร์เก็บข้อมูล\n"
+                          "ท่านต้องการสร้างโฟล์เดอร์ไว้ที่ไดรฟ์ไหนระหว่าง C หรือ D")
             drive_name = input(":").upper()
-            os.makedirs(drive_name+':\AccountFile')
+            try:
+                os.makedirs(drive_name + ':\BOBO')
+            except:
+                print("ไม่สามารถสร้างไฟล์ที่ตำแหน่งดังกล่าวได้ กรุณากรอกข้อมูลใหม่")
+                self.checkFolder()
         elif os.path.exists('D:\AccountFile'):
             drive_name = 'D'
         elif os.path.exists('C:\AccountFile'):
