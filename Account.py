@@ -1,5 +1,5 @@
 """
-รายงานความคืบหน้า Term Project 2
+Source Code Term Project
 
 นายธณรัฐ เพียรชัยภูมิ 643040011-1
 นายพีระณัฐ ศรีสรรพ์ 643040249-8
@@ -135,7 +135,7 @@ class openAccount:
                           "ท่านต้องการสร้างโฟล์เดอร์ไว้ที่ไดรฟ์ไหนระหว่าง C หรือ D")
             drive_name = input(":").upper()
             try:
-                os.makedirs(drive_name + ':\BOBO')
+                os.makedirs(drive_name + ":\AccountFile")
             except:
                 print("ไม่สามารถสร้างไฟล์ที่ตำแหน่งดังกล่าวได้ กรุณากรอกข้อมูลใหม่")
                 self.checkFolder()
@@ -184,7 +184,7 @@ class openAccount:
         plt.xticks(no)
         plt.title("Total money of the account in the date " + str(day))
         plt.xlabel("Terms of receipt of income - expense (Time)")
-        plt.ylabel("Amount (Baht)")
+        plt.ylabel("Amount of Money")
         plt.show()
 
     def plotMonth(self, month, file_name):
@@ -210,7 +210,7 @@ class openAccount:
         plt.xlim(1, 31)
         plt.title("Total money of the account in the month " + str(month))
         plt.xlabel("Date of receipt of income - expense (Date)")
-        plt.ylabel("Amount (Baht)")
+        plt.ylabel("Amount of Money")
         plt.show()
 
     def strat_menu(self):
